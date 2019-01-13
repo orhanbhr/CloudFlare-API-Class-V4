@@ -8,7 +8,8 @@
 
 namespace App;
 
-class CloudFlareAPIClassV4 {
+class CloudFlareAPIClassV4
+{
     private $apiUrl = 'https://api.cloudflare.com/client/v4/';
     private $email = null;
     private $key = null;
@@ -211,21 +212,21 @@ class CloudFlareAPIClassV4 {
             'Content-Type: application/json',
         );
         $json = json_encode($data);
-        curl_setopt($ch,CURLOPT_URL,$this->apiUrl . $url);
-        curl_setopt($ch,CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_VERBOSE,0);
-        curl_setopt($ch,CURLOPT_FORBID_REUSE,true);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($ch, CURLOPT_URL, $this->apiUrl . $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_VERBOSE, 0);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         if ($method != 'GET')
-            curl_setopt($ch,CURLOPT_POSTFIELDS, $json);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
 
         if ($method == 'DELETE')
-            curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'DELETE');
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
         if ($method == 'PATCH')
-            curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'PATCH');
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 
         $response = curl_exec($ch);
         curl_close($ch);
