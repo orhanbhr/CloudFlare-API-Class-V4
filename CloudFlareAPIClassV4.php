@@ -46,6 +46,20 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Get Domains on CloudFlare Domain
+     * @return object
+     */
+    public function getDomain()
+    {
+        $request = $this->connection(
+            'GET',
+            'zones?per_page=50'
+        );
+
+        return $request;
+    }
+
+    /**
      * Add DNS Record on CloudFlare Domain
      * @param $zoneId
      * @param $type
@@ -97,6 +111,24 @@ class CloudFlareAPIClassV4
         return $request;
     }
 
+    public function addPageRule($zoneId, $targets = [], $actions = [], $priority = 1, $status = 'active')
+    {
+        $data = [
+            'targets' => $targets,
+            'actions' => $actions,
+            'priority' => $priority,
+            'status' => $status
+        ];
+
+        $request = $this->connection(
+            'POST',
+            'zones/' . $zoneId . '/pagerules',
+            $data
+        );
+
+        return $request;
+    }
+
     /**
      * Get Page Rules on CloudFlare Domain
      * @param $zoneId
@@ -107,6 +139,22 @@ class CloudFlareAPIClassV4
         $request = $this->connection(
             'GET',
             'zones/' . $zoneId . '/pagerules'
+        );
+
+        return $request;
+    }
+
+    /**
+     * Delete Page Rule on CloudFlare Domain
+     * @param $zoneId
+     * @param $pageRuleId
+     * @return object
+     */
+    public function deletePageRule($zoneId, $pageRuleId)
+    {
+        $request = $this->connection(
+            'DELETE',
+            'zones/' . $zoneId . '/pagerules/' . $pageRuleId
         );
 
         return $request;
