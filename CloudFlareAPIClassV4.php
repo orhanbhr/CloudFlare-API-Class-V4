@@ -83,6 +83,36 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Get DNS on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getDns($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/dns_records'
+        );
+
+        return $request;
+    }
+
+    /**
+     * Get Page Rules on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getPageRules($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/pagerules'
+        );
+
+        return $request;
+    }
+
+    /**
      * Change Cache Level on CloudFlare Domain
      * @param $zoneId
      * @param string $value
