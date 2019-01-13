@@ -102,6 +102,21 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Get Cache Level on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getCacheLevel($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/cache_level'
+        );
+
+        return $request;
+    }
+
+    /**
      * Change Browser Cache TTL on CloudFlare Domain
      * @param $zoneId
      * @param int $value
@@ -115,6 +130,21 @@ class CloudFlareAPIClassV4
             [
                 'value' => $value
             ]
+        );
+
+        return $request;
+    }
+
+    /**
+     * Get Browser Cache TTL on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getBrowserCacheTtl($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/browser_cache_ttl'
         );
 
         return $request;
@@ -140,6 +170,21 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Get Always Online TTL on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getAlwaysOnline($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/always_online'
+        );
+
+        return $request;
+    }
+
+    /**
      * Change Development Mode on CloudFlare Domain
      * @param $zoneId
      * @param string $value
@@ -153,6 +198,21 @@ class CloudFlareAPIClassV4
             [
                 'value' => $value
             ]
+        );
+
+        return $request;
+    }
+
+    /**
+     * Get Development Model on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getDevelopmentMode($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/development_mode'
         );
 
         return $request;
@@ -178,6 +238,21 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Get Automatic Https Rewrites on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getAutomaticHttpsRewrites($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/automatic_https_rewrites'
+        );
+
+        return $request;
+    }
+
+    /**
      * Change Always Use Https on CloudFlare Domain
      * @param $zoneId
      * @param string $value
@@ -197,7 +272,22 @@ class CloudFlareAPIClassV4
     }
 
     /**
-     * Change SSL Verification on CloudFlare Domain
+     * Get Always Use Https on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getAlwaysUseHttps($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/always_use_https'
+        );
+
+        return $request;
+    }
+
+    /**
+     * Get SSL Verification on CloudFlare Domain
      * @param $zoneId
      * @return object
      */
