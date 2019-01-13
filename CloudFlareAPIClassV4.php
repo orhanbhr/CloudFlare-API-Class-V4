@@ -197,6 +197,36 @@ class CloudFlareAPIClassV4
     }
 
     /**
+     * Change SSL Verification on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getSslVerification($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/ssl/verification'
+        );
+
+        return $request;
+    }
+
+    /**
+     * Change SSL Status on CloudFlare Domain
+     * @param $zoneId
+     * @return object
+     */
+    public function getSslStatus($zoneId)
+    {
+        $request = $this->connection(
+            'GET',
+            'zones/' . $zoneId . '/settings/ssl'
+        );
+
+        return $request;
+    }
+
+    /**
      * cURL Connection Method
      * @param string $method
      * @param $url
