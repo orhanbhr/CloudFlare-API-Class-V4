@@ -32,9 +32,9 @@ class CloudFlareAPIClassV4 {
      */
     public function addDomain($name, $jumpStart = false)
     {
-        $url = 'zones';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'POST',
+            'zones',
             [
                 'name' => $name,
                 'jump_start' => $jumpStart
@@ -72,9 +72,9 @@ class CloudFlareAPIClassV4 {
             $data['priority'] = (int)$priority;
         }
 
-        $url = 'zones/' . $zoneId . '/dns_records';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'POST',
+            'zones/' . $zoneId . '/dns_records',
             $data
         );
 
@@ -89,9 +89,9 @@ class CloudFlareAPIClassV4 {
      */
     public function changeCacheLevel($zoneId, $value = 'aggressive')
     {
-        $url = 'zones/' . $zoneId . '/settings/cache_level';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/cache_level',
             [
                 'value' => $value
             ]
@@ -108,9 +108,9 @@ class CloudFlareAPIClassV4 {
      */
     public function changeBrowserCacheTtl($zoneId, $value = 14400)
     {
-        $url = 'zones/' . $zoneId . '/settings/browser_cache_ttl';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/browser_cache_ttl',
             [
                 'value' => $value
             ]
@@ -127,9 +127,9 @@ class CloudFlareAPIClassV4 {
      */
     public function changeAlwaysOnline($zoneId, $value = 'on')
     {
-        $url = 'zones/' . $zoneId . '/settings/always_online';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/always_online',
             [
                 'value' => $value
             ]
@@ -146,9 +146,9 @@ class CloudFlareAPIClassV4 {
      */
     public function changeDevelopmentMode($zoneId, $value = 'off')
     {
-        $url = 'zones/' . $zoneId . '/settings/development_mode';
-        $request = $this->postSpider(
-            $url,
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/development_mode',
             [
                 'value' => $value
             ]
@@ -158,33 +158,51 @@ class CloudFlareAPIClassV4 {
     }
 
     /**
-     * cURL Connection for GET Method
-     * @param $url
+     * Change Automatic Https Rewrites on CloudFlare Domain
+     * @param $zoneId
+     * @param string $value
      * @return object
      */
-    private function getSpider($url)
+    public function changeAutomaticHttpsRewrites($zoneId, $value = 'off')
     {
-        $ch = curl_init();
-        $headers = array(
-            'X-Auth-Email: ' . $this->email,
-            'X-Auth-Key: ' . $this->key,
-            'Content-Type: application/json',
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/automatic_https_rewrites',
+            [
+                'value' => $value
+            ]
         );
-        curl_setopt($ch,CURLOPT_URL,$this->apiUrl . $url);
-        curl_setopt($ch,CURLOPT_HTTPHEADER, $headers);
-        $response = curl_exec($ch);
-        curl_close($ch);
 
-        return json_decode($response);
+        return $request;
     }
 
     /**
-     * cURL Connection for PATCH Method
+     * Change Always Use Https on CloudFlare Domain
+     * @param $zoneId
+     * @param string $value
+     * @return object
+     */
+    public function changeAlwaysUseHttps($zoneId, $value = 'off')
+    {
+        $request = $this->connection(
+            'PATCH',
+            'zones/' . $zoneId . '/settings/always_use_https',
+            [
+                'value' => $value
+            ]
+        );
+
+        return $request;
+    }
+
+    /**
+     * cURL Connection Method
+     * @param string $method
      * @param $url
      * @param array $data
      * @return object
      */
-    private function patchSpider($url, $data = [])
+    private function connection($method, $url, $data = [])
     {
         $ch = curl_init();
         $headers = array(
@@ -195,57 +213,20 @@ class CloudFlareAPIClassV4 {
         $json = json_encode($data);
         curl_setopt($ch,CURLOPT_URL,$this->apiUrl . $url);
         curl_setopt($ch,CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $json);
-        curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'PATCH');
-        $response = curl_exec($ch);
-        curl_close($ch);
+        curl_setopt($ch,CURLOPT_VERBOSE,0);
+        curl_setopt($ch,CURLOPT_FORBID_REUSE,true);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 
-        return json_decode($response);
-    }
+        if ($method != 'GET')
+            curl_setopt($ch,CURLOPT_POSTFIELDS, $json);
 
-    /**
-     * cURL Connection for POST Method
-     * @param $url
-     * @param array $data
-     * @return object
-     */
-    private function postSpider($url, $data = [])
-    {
-        $ch = curl_init();
-        $headers = array(
-            'X-Auth-Email: ' . $this->email,
-            'X-Auth-Key: ' . $this->key,
-            'Content-Type: application/json',
-        );
-        $json = json_encode($data);
-        curl_setopt($ch,CURLOPT_URL,$this->apiUrl . $url);
-        curl_setopt($ch,CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $json);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        if ($method == 'DELETE')
+            curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'DELETE');
 
-        return json_decode($response);
-    }
+        if ($method == 'PATCH')
+            curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'PATCH');
 
-    /**
-     * cURL Connection for DELETE Method
-     * @param $url
-     * @param array $data
-     * @return object
-     */
-    private function deleteSpider($url, $data = [])
-    {
-        $ch = curl_init();
-        $headers = array(
-            'X-Auth-Email: ' . $this->email,
-            'X-Auth-Key: ' . $this->key,
-            'Content-Type: application/json',
-        );
-        $json = json_encode($data);
-        curl_setopt($ch,CURLOPT_URL,$this->apiUrl . $url);
-        curl_setopt($ch,CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $json);
-        curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'DELETE');
         $response = curl_exec($ch);
         curl_close($ch);
 
